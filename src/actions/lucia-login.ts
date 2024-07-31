@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/db";
 
 export async function login(formData: FormData) {
-  // const username = formData.get("username");
   const password = formData.get("password");
   const email = formData.get("email") as string;
 

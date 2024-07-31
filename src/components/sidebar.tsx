@@ -18,17 +18,21 @@ import { Button } from "./ui/button";
 import { Sheet, SheetTrigger } from "./ui/sheet";
 import SidebarItem from "./sidebar-items";
 import { logout } from "@/actions/logout";
-import IconButton from "./icon-button";
 import TaskSheetContent from "./tasksheet-content";
-import Image from "next/image";
 
 export default function Sidebar({ user }: { user: User }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleItemClick = (label: string) => {
     setActiveItem(label);
   };
+
+  async function handleLogout() {
+    await logout();
+    setIsSubmitting(true);
+  }
 
   return (
     <div className="h-screen w-[285px] flex flex-col justify-between p-4 border-r border-[#dedede]">
@@ -44,9 +48,13 @@ export default function Sidebar({ user }: { user: User }) {
               <PiSpinnerBold size={24} className="stroke-black" />
               <MdKeyboardDoubleArrowRight size={28} />
             </div>
-            <form action={logout}>
-              {/* <button>Sign out</button> */}
-              <IconButton label="Logout" />
+            <form action={handleLogout}>
+              <Button
+                disabled={isSubmitting}
+                className="bg-neutral-500 hover:bg-neutral-400 text-white font-normal p-2"
+              >
+                Logout
+              </Button>
             </form>
           </div>
         </div>

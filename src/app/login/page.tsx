@@ -5,6 +5,7 @@ import { Barlow } from "next/font/google";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { login } from "@/actions/lucia-login";
+import { useState } from "react";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -12,10 +13,17 @@ const inputStyles =
   "text-xl bg-[#EBEBEB] h-[52px] focus-visible:ring-neutral-400 focus-visible:ring-1 focus-visible:ring-offset-1";
 
 export default function LoginPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleLogin(formData: FormData) {
+    await login(formData);
+    setIsSubmitting(true);
+  }
+
   return (
     <main className="h-screen bg-gradient-to-b from-white to-[#AFA3FF] text-center ">
       <form
-        action={login}
+        action={handleLogin}
         className="inline-flex flex-col items-center p-[60px] mt-[120px] bg-gradient-to-b 
         from-[#f7f7f7] to-[#f0f0f0] gap-y-8 
       w-[648px] rounded-2xl"
@@ -39,8 +47,9 @@ export default function LoginPage() {
           <Button
             className="text-xl h-[52px] bg-gradient-to-b from-[#4C38C2] to-[#2F2188] font-normal"
             type="submit"
+            disabled={isSubmitting}
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </div>
         <p className="text-x text-[#606060]">
