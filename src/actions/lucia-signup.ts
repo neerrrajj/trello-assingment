@@ -5,7 +5,6 @@ import { hash } from "@node-rs/argon2";
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { generateIdFromEntropySize } from "lucia";
 import prisma from "@/lib/db";
 
 export async function signup(formData: FormData) {
@@ -13,7 +12,6 @@ export async function signup(formData: FormData) {
   const password = formData.get("password");
   const email = formData.get("email") as string;
   // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-  // keep in mind some database (e.g. mysql) are case insensitive
   if (
     typeof username !== "string" ||
     username.length < 3 ||
@@ -35,7 +33,6 @@ export async function signup(formData: FormData) {
   }
 
   const passwordHash = await hash(password, {
-    // recommended minimum parameters
     memoryCost: 19456,
     timeCost: 2,
     outputLen: 32,
@@ -43,9 +40,6 @@ export async function signup(formData: FormData) {
   });
   const userId = new ObjectId().toString(); // 16 characters long
 
-  // TODO: check if username is already used
-
-  // Check if email is already used
   const existingUser = await prisma.user.findFirst({
     where: {
       email: email,

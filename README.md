@@ -1,5 +1,12 @@
 # Workflo - Task Management App
 
+## Features
+
+- User authentication (with Email and Password)
+- Task management (CRUD operations)
+- Drag and drop tasks between statuses
+- Search tasks across statuses
+
 ## Setup Instructions
 
 1. Clone the repository:
@@ -23,7 +30,7 @@
 4. Set up your environment variables. Create a `.env` file in the root directory of your project and add the following:
 
    ```plaintext
-   DATABASE_URL=your_database_connection_string
+   DATABASE_URL=your_postgres_database_connection_string
    JWT_SECRET=your_jwt_secret
    ```
 

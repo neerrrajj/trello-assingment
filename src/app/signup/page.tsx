@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Barlow } from "next/font/google";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signup } from "@/actions/lucia-signup";
+import getUser from "@/actions/getUser";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -14,6 +15,13 @@ const inputStyles =
 
 export default function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const checkIfUser = async () => {
+      await getUser();
+    };
+    checkIfUser();
+  }, []);
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
