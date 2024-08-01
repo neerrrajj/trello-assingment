@@ -25,7 +25,7 @@ const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 const inputStyles =
   "text-xl bg-[#EBEBEB] h-[52px] focus-visible:ring-neutral-400 focus-visible:ring-1 focus-visible:ring-offset-1";
 
-export const userSchema = z.object({
+const userSchema = z.object({
   username: z
     .string()
     .min(4, { message: "Username must contain atleast 4 letters" })
