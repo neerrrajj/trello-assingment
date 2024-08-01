@@ -10,13 +10,14 @@ export default async function getTasks() {
     console.log("no user session found");
     return redirect("/login");
   }
+
   try {
-    let tasks = [];
-    tasks = await prisma.task.findMany({
+    const tasks = await prisma.task.findMany({
       where: {
         userId: user.id,
       },
     });
+    console.log("Fetched tasks!!");
     return { user, tasks };
   } catch (error) {
     console.error("Error fetching tasks:", error);

@@ -17,7 +17,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { signup } from "@/actions/lucia-signup";
+import { signup } from "@/actions/signup";
+import { cn } from "@/lib/utils";
 import checkUser from "@/actions/checkUser";
 import { userSchema } from "@/lib/formSchemas";
 
@@ -152,8 +153,14 @@ export default function SignUpPage() {
             </Button>
           </div>
           <p className="text-x text-[#606060]">
-            Already have an account?
-            <Link href="/login" className="text-[#0054A1]">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className={cn(
+                "text-[#0054A1]",
+                isCheckingUser && "cursor-not-allowed"
+              )}
+            >
               Login
             </Link>
             .

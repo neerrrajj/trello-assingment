@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { User } from "lucia";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
@@ -19,13 +19,13 @@ import { Sheet, SheetTrigger } from "./ui/sheet";
 import SidebarItem from "./sidebar-items";
 import { logout } from "@/actions/logout";
 import TaskSheetContent from "./tasksheet-content";
-import getUser from "@/actions/getUser";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar({ user }: { user: User }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   const handleItemClick = (label: string) => {
     setActiveItem(label);
@@ -33,8 +33,22 @@ export default function Sidebar({ user }: { user: User }) {
 
   async function handleLogout() {
     setIsSubmitting(true);
-    await logout();
-    setIsSubmitting(false);
+    try {
+      console.log("logging out");
+      const response = await logout();
+      if (response.error) {
+        console.error("Logout error:", response.error);
+        setIsSubmitting(false);
+      }
+      if (response.success) {
+        console.log("Logout successful, redirecting to login");
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Failed to submit the form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -105,10 +119,7 @@ export default function Sidebar({ user }: { user: User }) {
                 <BiSolidPlusCircle size={26} />
               </Button>
             </SheetTrigger>
-            <TaskSheetContent
-              // userId={user.id}
-              setIsOpen={setIsOpen}
-            />
+            <TaskSheetContent setIsOpen={setIsOpen} />
           </Sheet>
         </div>
       </div>

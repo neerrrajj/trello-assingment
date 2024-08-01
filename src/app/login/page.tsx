@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { login } from "@/actions/lucia-login";
+import { login } from "@/actions/login";
 import { cn } from "@/lib/utils";
 import checkUser from "@/actions/checkUser";
 
