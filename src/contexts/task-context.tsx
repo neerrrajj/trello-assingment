@@ -30,8 +30,10 @@ export default function TaskContextProvider({
   useEffect(() => {
     const fetchTasks = async () => {
       setIsLoading(true);
-      const { tasks } = await getTasks();
-      setTasks(tasks);
+      const response = await getTasks();
+      if (response) {
+        setTasks(response.tasks);
+      }
       setIsLoading(false);
     };
     fetchTasks();

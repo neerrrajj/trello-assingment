@@ -3,11 +3,7 @@
 import { validateRequest } from "@/lib/validate-request";
 import { redirect } from "next/navigation";
 
-export default async function getUser() {
+export default async function checkUser() {
   const { user } = await validateRequest();
-  if (!user) {
-    console.error("invalid request");
-    redirect("/login");
-  }
   return user;
 }

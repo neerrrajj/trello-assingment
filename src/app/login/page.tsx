@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Barlow } from "next/font/google";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { login } from "@/actions/lucia-login";
-import getUser from "@/actions/getUser";
+import { cn } from "@/lib/utils";
+import checkUser from "@/actions/checkUser";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -15,17 +18,39 @@ const inputStyles =
 
 export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingUser, setIsCheckingUser] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const checkIfUser = async () => {
-      await getUser();
+      const user = await checkUser();
+      if (user) {
+        router.push("/tasks");
+      } else {
+        setIsCheckingUser(false);
+      }
     };
     checkIfUser();
   }, []);
 
   async function handleLogin(formData: FormData) {
     setIsSubmitting(true);
-    await login(formData);
+    try {
+      console.log("Submitting form with values:", formData);
+      const response = await login(formData);
+      if (response.error) {
+        console.error("Login error:", response.error);
+        setIsSubmitting(false);
+      }
+      if (response.success) {
+        console.log("Login successful, redirecting to tasks");
+        router.push("/tasks");
+      }
+    } catch (error) {
+      console.error("Failed to submit the form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -55,16 +80,26 @@ export default function LoginPage() {
           <Button
             className="text-xl h-[52px] bg-gradient-to-b from-[#4C38C2] to-[#2F2188] font-normal"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCheckingUser}
           >
-            {isSubmitting ? "Logging in..." : "Login"}
+            {isSubmitting
+              ? "Logging in..."
+              : isCheckingUser
+              ? "Checking user..."
+              : "Login"}
           </Button>
         </div>
         <p className="text-x text-[#606060]">
           Don&apos;t have an account? Create a{" "}
-          <a href="/signup" className="text-[#0054A1]">
+          <Link
+            href="/signup"
+            className={cn(
+              "text-[#0054A1]",
+              isCheckingUser && "cursor-not-allowed"
+            )}
+          >
             new account
-          </a>
+          </Link>
           .
         </p>
       </form>

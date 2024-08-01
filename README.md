@@ -12,7 +12,7 @@
 - Frontend: Next.js with ;atest features like Server Actions and React Server Components
 - Styling: Tailwind CSS
 - Backend: PostgreSQL (Aiven) with Prisma ORM
-- Others: Lucia Auth, Shadcn UI
+- Others: Lucia Auth, Shadcn UI, Zod form validation
 
 ## Setup Instructions
 
