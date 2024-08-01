@@ -1,11 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Barlow } from "next/font/google";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { login } from "@/actions/lucia-login";
-import { useState } from "react";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -16,8 +16,8 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleLogin(formData: FormData) {
-    await login(formData);
     setIsSubmitting(true);
+    await login(formData);
   }
 
   return (
