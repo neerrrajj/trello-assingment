@@ -21,7 +21,7 @@ type TaskLabel = "To-do" | "In Progress" | "Under Review" | "Completed";
 export default function TasksContainer() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { tasks } = useTaskContextProvider();
+  const { tasks, reFetch } = useTaskContextProvider();
 
   const taskStatuses: TaskStatus[] = [
     "TODO",
@@ -38,6 +38,13 @@ export default function TasksContainer() {
     UNDERREVIEW: [],
     COMPLETED: [],
   });
+
+  useEffect(() => {
+    const someFunction = async () => {
+      await reFetch();
+    };
+    someFunction();
+  }, []);
 
   useEffect(() => {
     const groupedTasks = taskStatuses.reduce((acc, status) => {

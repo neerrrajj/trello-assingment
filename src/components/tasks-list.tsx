@@ -50,73 +50,76 @@ export default function TasksList({ label, tasks }: TaskListProps) {
         <h1>{label}</h1>
         <TbMenuDeep size={20} />
       </div>
-      {isLoading && <TaskSkeleton />}
-      <div className="flex flex-col gap-y-2 overflow-y-auto ">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          {tasks.map((task, index) => {
-            return (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className="h-full"
-                  >
-                    <SheetTrigger asChild key={task.id}>
-                      <div
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setIsOpen(true);
-                        }}
-                        className="bg-[#f9f9f9] border border-[#dedede] rounded-lg p-[14px] flex flex-col gap-y-3 
-                          hover:cursor-pointer hover:bg-zinc-200 duration-300 ease-in"
-                      >
-                        <div>
-                          <h2 className="font-medium text-[#606060] mb-1">
-                            {task.title}
-                          </h2>
-                          <p className="text-[14px] text-[#797979]">
-                            {truncateText(task.description || "", 50)}
-                          </p>
-                        </div>
+      {isLoading ? (
+        <TaskSkeleton />
+      ) : (
+        <div className="flex flex-col gap-y-2 overflow-y-auto ">
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            {tasks.map((task, index) => {
+              return (
+                <Draggable key={task.id} draggableId={task.id} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className="h-full"
+                    >
+                      <SheetTrigger asChild key={task.id}>
                         <div
-                          className={cn(
-                            "rounded-lg w-fit px-2 py-[6px] text-white flex items-center",
-                            {
-                              "bg-[#FF6B6B]": task.priority === "URGENT",
-                              "bg-[#FFA235]": task.priority === "MEDIUM",
-                              "bg-[#0ECC5A]": task.priority === "LOW",
-                            }
-                          )}
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setIsOpen(true);
+                          }}
+                          className="bg-[#f9f9f9] border border-[#dedede] rounded-lg p-[14px] flex flex-col gap-y-3 
+                          hover:cursor-pointer hover:bg-zinc-200 duration-300 ease-in"
                         >
-                          <span className="text-xs">
-                            {task.priority?.toLowerCase()}
-                          </span>
-                        </div>
-                        <div className="inline-flex items-center gap-x-2 text-[#606060]">
-                          <MdAccessTime />
-                          <p className="font-semibold text-[14px]">
-                            {formatDate(task.deadline.toString())}
+                          <div>
+                            <h2 className="font-medium text-[#606060] mb-1">
+                              {task.title}
+                            </h2>
+                            <p className="text-[14px] text-[#797979]">
+                              {truncateText(task.description || "", 50)}
+                            </p>
+                          </div>
+                          <div
+                            className={cn(
+                              "rounded-lg w-fit px-2 py-[6px] text-white flex items-center",
+                              {
+                                "bg-[#FF6B6B]": task.priority === "URGENT",
+                                "bg-[#FFA235]": task.priority === "MEDIUM",
+                                "bg-[#0ECC5A]": task.priority === "LOW",
+                              }
+                            )}
+                          >
+                            <span className="text-xs">
+                              {task.priority?.toLowerCase()}
+                            </span>
+                          </div>
+                          <div className="inline-flex items-center gap-x-2 text-[#606060]">
+                            <MdAccessTime />
+                            <p className="font-semibold text-[14px]">
+                              {formatDate(task.deadline.toString())}
+                            </p>
+                          </div>
+                          <p className="text-[#797979] text-[14px] font-medium">
+                            {formatRelativeTime(task.updatedAt.toString())}
                           </p>
                         </div>
-                        <p className="text-[#797979] text-[14px] font-medium">
-                          {formatRelativeTime(task.updatedAt.toString())}
-                        </p>
-                      </div>
-                    </SheetTrigger>
-                    <TaskSheetContent
-                      task={selectedTask}
-                      setIsOpen={setIsOpen}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            );
-          })}
-        </Sheet>
-        <TasksListAdd label={label} />
-      </div>
+                      </SheetTrigger>
+                      <TaskSheetContent
+                        task={selectedTask}
+                        setIsOpen={setIsOpen}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
+          </Sheet>
+          <TasksListAdd label={label} />
+        </div>
+      )}
     </div>
   );
 }

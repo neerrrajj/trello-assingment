@@ -15,6 +15,7 @@ type TaskContextProps = {
   tasks: Task[];
   setTasks: Dispatch<SetStateAction<Task[] | []>>;
   isLoading: boolean;
+  reFetch: () => Promise<void>;
 };
 
 const TaskContext = createContext<TaskContextProps | null>(null);
@@ -27,25 +28,28 @@ export default function TaskContextProvider({
   const [tasks, setTasks] = useState<Task[] | []>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getTasks();
-        if (response) {
-          setTasks(response.tasks);
-        }
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      } finally {
-        setIsLoading(false);
+  const fetchTasks = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getTasks();
+      if (response) {
+        setTasks(response.tasks);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchTasks();
   }, []);
 
   return (
-    <TaskContext.Provider value={{ tasks, setTasks, isLoading }}>
+    <TaskContext.Provider
+      value={{ tasks, setTasks, isLoading, reFetch: fetchTasks }}
+    >
       {children}
     </TaskContext.Provider>
   );
