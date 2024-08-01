@@ -36,6 +36,7 @@ export default async function createTask(
     });
     revalidatePath("/tasks");
     console.log("Task created successfully:", task);
+    return task;
   } catch (error) {
     console.error("Error creating task:", error);
     throw new Error("Failed to create task");

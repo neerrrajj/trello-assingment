@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import TaskSheetContent from "./tasksheet-content";
+import { useTaskContextProvider } from "@/contexts/task-context";
 
 type TaskListProps = {
-  userId: string;
   label: "To-do" | "In Progress" | "Under Review" | "Completed";
   tasks: Task[];
 };
@@ -39,15 +39,10 @@ function formatRelativeTime(dateString: string): string {
     : formattedDate;
 }
 
-export default function TasksList({ userId, label, tasks }: TaskListProps) {
+export default function TasksList({ label, tasks }: TaskListProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  // const [currentTask, setCurrentTask] = useState<Task | null>(null);
-
-  // const openTaskSheet = (task: Task) => {
-  //   setCurrentTask(task);
-  //   setIsOpen(true);
-  // };
+  const { isLoading } = useTaskContextProvider();
 
   return (
     <div className="flex flex-col gap-y-4 w-full h-[calc(100vh-180px)] ">
@@ -55,6 +50,7 @@ export default function TasksList({ userId, label, tasks }: TaskListProps) {
         <h1>{label}</h1>
         <TbMenuDeep size={20} />
       </div>
+      {isLoading && <TaskSkeleton />}
       <div className="flex flex-col gap-y-2 overflow-y-auto ">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           {tasks.map((task, index) => {
@@ -70,7 +66,6 @@ export default function TasksList({ userId, label, tasks }: TaskListProps) {
                     <SheetTrigger asChild key={task.id}>
                       <div
                         onClick={() => {
-                          // onTaskClick(task);
                           setSelectedTask(task);
                           setIsOpen(true);
                         }}
@@ -111,9 +106,7 @@ export default function TasksList({ userId, label, tasks }: TaskListProps) {
                       </div>
                     </SheetTrigger>
                     <TaskSheetContent
-                      userId={userId}
                       task={selectedTask}
-                      // onTaskClick={setSelectedTask}
                       setIsOpen={setIsOpen}
                     />
                   </div>
@@ -122,18 +115,17 @@ export default function TasksList({ userId, label, tasks }: TaskListProps) {
             );
           })}
         </Sheet>
-        <TasksListAdd userId={userId} label={label} />
+        <TasksListAdd label={label} />
       </div>
     </div>
   );
 }
 
 type TaskListAddProps = {
-  userId: string;
   label: "To-do" | "In Progress" | "Under Review" | "Completed";
 };
 
-function TasksListAdd({ userId, label }: TaskListAddProps) {
+function TasksListAdd({ label }: TaskListAddProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -148,12 +140,12 @@ function TasksListAdd({ userId, label }: TaskListAddProps) {
         </Button>
       </SheetTrigger>
       <SheetContent>
-        <TaskSheetContent
-          userId={userId}
-          setIsOpen={setIsOpen}
-          defaultStatus={label}
-        />
+        <TaskSheetContent setIsOpen={setIsOpen} defaultStatus={label} />
       </SheetContent>
     </Sheet>
   );
+}
+
+function TaskSkeleton() {
+  return <div className="bg-neutral-200 w-full h-40 rounded-lg"></div>;
 }

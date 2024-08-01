@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "lucia";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
@@ -19,19 +19,22 @@ import { Sheet, SheetTrigger } from "./ui/sheet";
 import SidebarItem from "./sidebar-items";
 import { logout } from "@/actions/logout";
 import TaskSheetContent from "./tasksheet-content";
+import getUser from "@/actions/getUser";
 
 export default function Sidebar({ user }: { user: User }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [user, setUser] = useState<User | null>(null);
 
   const handleItemClick = (label: string) => {
     setActiveItem(label);
   };
 
   async function handleLogout() {
-    await logout();
     setIsSubmitting(true);
+    await logout();
+    setIsSubmitting(false);
   }
 
   return (
@@ -40,7 +43,7 @@ export default function Sidebar({ user }: { user: User }) {
         <div className="flex flex-col gap-y-2">
           <div className="flex items-center gap-x-2">
             <div className="inline-flex h-[30px] w-[30px] rounded-lg bg-pink-700" />
-            <p className="font-medium">{user.username}</p>
+            <p className="font-medium">{user?.username}</p>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center text-[#666666] gap-x-3">
@@ -102,7 +105,10 @@ export default function Sidebar({ user }: { user: User }) {
                 <BiSolidPlusCircle size={26} />
               </Button>
             </SheetTrigger>
-            <TaskSheetContent userId={user.id} setIsOpen={setIsOpen} />
+            <TaskSheetContent
+              // userId={user.id}
+              setIsOpen={setIsOpen}
+            />
           </Sheet>
         </div>
       </div>

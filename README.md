@@ -3,9 +3,16 @@
 ## Features
 
 - User authentication (with Email and Password)
-- Task management (CRUD operations)
+- Task management using Context API (CRUD operations)
 - Drag and drop tasks between statuses
 - Search tasks across statuses
+
+## Tech stack
+
+- Frontend: Next.js with ;atest features like Server Actions and React Server Components
+- Styling: Tailwind CSS
+- Backend: PostgreSQL (Aiven) with Prisma ORM
+- Others: Lucia Auth, Shadcn UI
 
 ## Setup Instructions
 

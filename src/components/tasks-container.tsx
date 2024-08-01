@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Task } from "@prisma/client";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { FiCalendar, FiFilter, FiSearch, FiShare2 } from "react-icons/fi";
@@ -13,19 +13,15 @@ import TasksList from "./tasks-list";
 import updateStatus from "@/actions/updateStatus";
 import TaskSheetContent from "./tasksheet-content";
 import IconButton from "./icon-button";
+import { useTaskContextProvider } from "@/contexts/task-context";
 
-export type TaskStatus = "TODO" | "INPROGRESS" | "UNDERREVIEW" | "COMPLETED";
+type TaskStatus = "TODO" | "INPROGRESS" | "UNDERREVIEW" | "COMPLETED";
 type TaskLabel = "To-do" | "In Progress" | "Under Review" | "Completed";
 
-export default function TasksContainer({
-  userId,
-  tasks,
-}: {
-  userId: string;
-  tasks: Task[];
-}) {
+export default function TasksContainer() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { tasks } = useTaskContextProvider();
 
   const taskStatuses: TaskStatus[] = [
     "TODO",
@@ -34,12 +30,36 @@ export default function TasksContainer({
     "COMPLETED",
   ];
 
-  const initialTasksByStatus = taskStatuses.reduce((acc, status) => {
-    acc[status] = tasks.filter((task) => task.status === status);
-    return acc;
-  }, {} as Record<TaskStatus, Task[]>);
+  const [tasksByStatus, setTasksByStatus] = useState<
+    Record<TaskStatus, Task[]>
+  >({
+    TODO: [],
+    INPROGRESS: [],
+    UNDERREVIEW: [],
+    COMPLETED: [],
+  });
 
-  const [tasksByStatus, setTasksByStatus] = useState(initialTasksByStatus);
+  useEffect(() => {
+    const groupedTasks = taskStatuses.reduce((acc, status) => {
+      acc[status] = tasks.filter((task) => task.status === status);
+      return acc;
+    }, {} as Record<TaskStatus, Task[]>);
+    setTasksByStatus(groupedTasks);
+  }, [tasks]);
+
+  // const taskStatuses: TaskStatus[] = [
+  //   "TODO",
+  //   "INPROGRESS",
+  //   "UNDERREVIEW",
+  //   "COMPLETED",
+  // ];
+
+  // const initialTasksByStatus = taskStatuses.reduce((acc, status) => {
+  //   acc[status] = tasks.filter((task) => task.status === status);
+  //   return acc;
+  // }, {} as Record<TaskStatus, Task[]>);
+
+  // const [tasksByStatus, setTasksByStatus] = useState(initialTasksByStatus);
 
   const headingMapping: Record<TaskStatus, TaskLabel> = {
     TODO: "To-do",
@@ -126,7 +146,7 @@ export default function TasksContainer({
                 <BiSolidPlusCircle size={20} />
               </Button>
             </SheetTrigger>
-            <TaskSheetContent userId={userId} setIsOpen={setIsOpen} />
+            <TaskSheetContent setIsOpen={setIsOpen} />
           </Sheet>
         </div>
       </div>
@@ -142,7 +162,6 @@ export default function TasksContainer({
                     className="w-full h-full"
                   >
                     <TasksList
-                      userId={userId}
                       label={headingMapping[status]}
                       tasks={filteredTasksByStatus[status]}
                     />

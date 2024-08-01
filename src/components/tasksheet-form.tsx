@@ -35,6 +35,8 @@ import createTask from "@/actions/createTask";
 import updateTask from "@/actions/updateTask";
 import deleteTask from "@/actions/deleteTask";
 import { TaskSheetIcon } from "./tasksheet-content";
+import { useTaskContextProvider } from "@/contexts/task-context";
+import getUser from "@/actions/getUser";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -69,17 +71,16 @@ export const formSchema = z.object({
 });
 
 export default function TaskSheetForm({
-  userId,
   task,
   setIsOpen,
   defaultStatus,
 }: {
-  userId: string;
   task?: Task | null;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   defaultStatus?: "To-do" | "In Progress" | "Under Review" | "Completed";
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { tasks, setTasks } = useTaskContextProvider();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -110,9 +111,12 @@ export default function TaskSheetForm({
 
     try {
       if (task?.id) {
-        await updateTask(task.id, mappedValues);
+        const updatedTask = await updateTask(task.id, mappedValues);
+        setTasks(tasks.map((t) => (t.id === task.id ? updatedTask : t)));
       } else {
-        await createTask(mappedValues, userId);
+        const user = await getUser();
+        const createdTask = await createTask(mappedValues, user?.id);
+        setTasks([...tasks, createdTask]);
       }
     } catch (error) {
       console.error("Failed to submit the form:", error);
@@ -127,6 +131,7 @@ export default function TaskSheetForm({
     try {
       if (task?.id) {
         await deleteTask(task.id);
+        setTasks(tasks.filter((t) => t.id !== task.id));
       }
     } catch (error) {
       console.error("Failed to delete the task:", error);
@@ -176,7 +181,6 @@ export default function TaskSheetForm({
                       <FormControl>
                         <div className="inline-flex w-full items-center justify-between">
                           <SelectTrigger className="border-0 flex h-10 w-full items-center justify-between">
-                            {/* <SelectValue placeholder="Not selected" /> */}
                             <Button
                               variant={"outline"}
                               value={task ? task.status : undefined}
@@ -238,7 +242,6 @@ export default function TaskSheetForm({
                             )}
                           </Button>
                         </SelectTrigger>
-                        {/* </div> */}
                       </FormControl>
                       <SelectContent>
                         {priority.map((p) => (

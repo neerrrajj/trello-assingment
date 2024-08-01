@@ -2,10 +2,11 @@ import { Barlow } from "next/font/google";
 import { IoHelpCircleOutline } from "react-icons/io5";
 import IconButton from "./icon-button";
 import { User } from "lucia";
+import getUser from "@/actions/getUser";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
-export default function Title({ user }: { user: User }) {
+export default async function Title({ user }: { user: User }) {
   const getGreeting = () => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) {

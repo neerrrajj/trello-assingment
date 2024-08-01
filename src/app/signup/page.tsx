@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signup } from "@/actions/lucia-signup";
 import getUser from "@/actions/getUser";
+import { redirect } from "next/navigation";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -18,7 +19,10 @@ export default function SignUpPage() {
 
   useEffect(() => {
     const checkIfUser = async () => {
-      await getUser();
+      const user = await getUser();
+      if (user) {
+        redirect("/tasks");
+      }
     };
     checkIfUser();
   }, []);

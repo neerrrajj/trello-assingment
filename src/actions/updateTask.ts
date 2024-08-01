@@ -16,14 +16,14 @@ export default async function updateTask(
   values: MappedFormValues
 ) {
   try {
-    await prisma.task.update({
+    const task = await prisma.task.update({
       where: { id: taskId },
       data: values,
     });
+    revalidatePath("/tasks");
+    return task;
   } catch (error) {
     console.error("Error updating task:", error);
     throw new Error("Failed to update task");
   }
-
-  revalidatePath("/tasks");
 }

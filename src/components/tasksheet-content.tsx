@@ -12,19 +12,15 @@ import TaskSheetForm from "./tasksheet-form";
 import IconButton from "./icon-button";
 
 type TaskSheetContentProps = {
-  userId: string;
   task?: Task | null;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   defaultStatus?: "To-do" | "In Progress" | "Under Review" | "Completed";
-  onTaskClick?: (task: Task) => void;
 };
 
 export default function TaskSheetContent({
-  userId,
   task,
   setIsOpen,
   defaultStatus,
-  onTaskClick,
 }: TaskSheetContentProps) {
   return (
     <SheetContent className="min-w-[700px] flex flex-col gap-y-8">
@@ -41,7 +37,6 @@ export default function TaskSheetContent({
         </div>
       </div>
       <TaskSheetForm
-        userId={userId}
         task={task}
         setIsOpen={setIsOpen}
         defaultStatus={defaultStatus}
