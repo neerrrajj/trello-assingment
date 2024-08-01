@@ -37,6 +37,7 @@ import deleteTask from "@/actions/deleteTask";
 import { TaskSheetIcon } from "./tasksheet-content";
 import { useTaskContextProvider } from "@/contexts/task-context";
 import getUser from "@/actions/getUser";
+import { formSchema } from "@/lib/formSchemas";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
@@ -58,17 +59,6 @@ const priorityMapping = {
   Medium: "MEDIUM",
   Urgent: "URGENT",
 } as const;
-
-export const formSchema = z.object({
-  title: z
-    .string()
-    .min(3, { message: "Title must contain atleast 3 letters" })
-    .max(50, { message: "Title must contain less than 50 letters" }),
-  status: z.enum(status),
-  priority: z.enum(priority).optional(),
-  deadline: z.date(),
-  description: z.string().optional(),
-});
 
 export default function TaskSheetForm({
   task,

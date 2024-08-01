@@ -31,7 +31,7 @@ export default function LoginPage() {
       }
     };
     checkIfUser();
-  }, []);
+  }, [router]);
 
   async function handleLogin(formData: FormData) {
     setIsSubmitting(true);

@@ -5,8 +5,9 @@ import { hash } from "@node-rs/argon2";
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import prisma from "@/lib/db";
-import { userSchema } from "@/app/signup/page";
 import { z } from "zod";
+
+import { userSchema } from "@/lib/formSchemas";
 
 export async function signup(values: z.infer<typeof userSchema>) {
   const { username, email, password } = values;

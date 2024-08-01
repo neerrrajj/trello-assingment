@@ -19,23 +19,12 @@ import {
 } from "@/components/ui/form";
 import { signup } from "@/actions/lucia-signup";
 import checkUser from "@/actions/checkUser";
+import { userSchema } from "@/lib/formSchemas";
 
 const barlow = Barlow({ weight: "600", subsets: ["latin"] });
 
 const inputStyles =
   "text-xl bg-[#EBEBEB] h-[52px] focus-visible:ring-neutral-400 focus-visible:ring-1 focus-visible:ring-offset-1";
-
-const userSchema = z.object({
-  username: z
-    .string()
-    .min(4, { message: "Username must contain atleast 4 letters" })
-    .max(31, { message: "Username must contain less than 31 letters" }),
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(6, { message: "Password must be atleast 6 characters" })
-    .max(255, { message: "Password must be less than 255 characters" }),
-});
 
 export default function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,7 +50,7 @@ export default function SignUpPage() {
       }
     };
     checkIfUser();
-  }, []);
+  }, [router]);
 
   async function handleSubmit(values: z.infer<typeof userSchema>) {
     setIsSubmitting(true);
